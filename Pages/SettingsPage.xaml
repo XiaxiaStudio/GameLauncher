@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="GameLauncher.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:GameLauncher.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:GameLauncher.Models"
+    mc:Ignorable="d">
+
+    <Grid Padding="16,8,16,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="设置" />
+
+        <Grid Grid.Row="1" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView
+                    x:Name="GamesListView"
+                    MaxHeight="300"
+                    ItemsSource="{x:Bind ViewModel.Games, Mode=OneWay}"
+                    SelectionChanged="GamesListView_SelectionChanged"
+                    SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:GameItem"
+                                      xmlns:models="using:GameLauncher.Models">
+                            <Grid Margin="4,2" MinHeight="48">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Margin="0,6,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <FontIcon
+                                            Glyph="&#xE735;"
+                                            FontSize="12"
+                                            Foreground="#FFD700"
+                                            Visibility="{x:Bind local:SettingsPage.BoolToVis(IsFavorite)}"
+                                            VerticalAlignment="Center" />
+                                        <TextBlock
+                                            Text="{x:Bind Name}"
+                                            FontWeight="SemiBold"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <TextBlock
+                                        Text="{x:Bind ExePath}"
+                                        FontSize="11"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <FontIcon
+                                    Grid.Column="1"
+                                    Glyph="&#xE735;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    VerticalAlignment="Center"
+                                    Margin="4"
+                                    Tag="{x:Bind}"
+                                    Tapped="FavoriteIcon_Tapped" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Spacing="6">
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <Button
+                            Content="添加游戏"
+                            Click="AddGame_Click"
+                            Width="95" />
+                        <Button
+                            Content="删除游戏"
+                            Click="DeleteGame_Click"
+                            Width="95" />
+                    </StackPanel>
+                    <Button
+                        Content="导入 Steam/Epic"
+                        Click="ImportGames_Click"
+                        HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <Border
+                    Grid.Row="2"
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Margin="0,4" />
+
+                <StackPanel
+                    Grid.Row="3"
+                    Spacing="8">
+                    <TextBlock
+                        Text="Steam 库路径"
+                        FontSize="14"
+                        FontWeight="SemiBold" />
+                    <ListView
+                        x:Name="SteamPathsListView"
+                        Height="100"
+                        ItemsSource="{x:Bind ViewModel.SteamLibraryPaths, Mode=OneWay}"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock
+                                    Text="{x:Bind}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Margin="4,2" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <Button
+                            Content="添加路径"
+                            Click="AddSteamPath_Click"
+                            Width="95" />
+                        <Button
+                            Content="删除路径"
+                            Click="RemoveSteamPath_Click"
+                            Width="95" />
+                    </StackPanel>
+                </StackPanel>
+
+                <Border
+                    Grid.Row="4"
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Margin="0,4" />
+
+                <StackPanel
+                    Grid.Row="5"
+                    Spacing="8">
+                    <TextBlock
+                        Text="AI 配置"
+                        FontSize="14"
+                        FontWeight="SemiBold" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="API 地址" FontSize="12" />
+                        <TextBox
+                            x:Name="AiEndpointBox"
+                            PlaceholderText="https://api.openai.com/v1/chat/completions"
+                            FontSize="12" />
+                    </StackPanel>
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="API Key" FontSize="12" />
+                        <PasswordBox
+                            x:Name="AiKeyBox"
+                            PlaceholderText="sk-..." />
+                    </StackPanel>
+                    <StackPanel Spacing="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="模型" FontSize="12" />
+                            <Button
+                                Grid.Column="1"
+                                x:Name="FetchModelsBtn"
+                                Content="获取模型"
+                                Click="FetchModels_Click"
+                                Padding="6,2"
+                                FontSize="11" />
+                        </Grid>
+                        <ComboBox
+                            x:Name="AiModelBox"
+                            IsEditable="True"
+                            PlaceholderText="gpt-4o-mini"
+                            FontSize="12"
+                            HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                    <Button
+                        Content="保存 AI 配置"
+                        Click="SaveAiSettings_Click"
+                        HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <Border
+                    Grid.Row="6"
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Margin="0,4" />
+
+                <StackPanel
+                    Grid.Row="7"
+                    Spacing="8">
+                    <TextBlock
+                        Text="主题风格"
+                        FontSize="14"
+                        FontWeight="SemiBold" />
+                    <ComboBox
+                        x:Name="ThemeComboBox"
+                        HorizontalAlignment="Stretch"
+                        SelectionChanged="ThemeComboBox_SelectionChanged">
+                        <ComboBoxItem Content="跟随系统" Tag="Default" />
+                        <ComboBoxItem Content="浅色模式" Tag="Light" />
+                        <ComboBoxItem Content="深色模式" Tag="Dark" />
+                    </ComboBox>
+                </StackPanel>
+
+                <Border
+                    Grid.Row="8"
+                    Height="1"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    Margin="0,4" />
+
+                <StackPanel
+                    Grid.Row="9"
+                    Spacing="8">
+                    <TextBlock
+                        Text="背景效果"
+                        FontSize="14"
+                        FontWeight="SemiBold" />
+                    <ComboBox
+                        x:Name="BackdropComboBox"
+                        HorizontalAlignment="Stretch"
+                        SelectionChanged="BackdropComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Mica（云母）" Tag="Mica" />
+                        <ComboBoxItem Content="Acrylic（亚克力）" Tag="Acrylic" />
+                    </ComboBox>
+                </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Column="1" Padding="16,0,16,0" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel
+                    x:Name="EditPanel"
+                    Spacing="16"
+                    Visibility="Collapsed">
+                    <TextBlock
+                        Text="编辑游戏"
+                        Style="{StaticResource SubtitleTextBlockStyle}" />
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="游戏名称" />
+                        <TextBox x:Name="GameNameBox" PlaceholderText="输入游戏名称" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="启动路径" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="GameExePathBox" PlaceholderText="选择 .exe 文件" IsReadOnly="True" />
+                            <Button Grid.Column="1" Content="浏览" Click="BrowseExe_Click" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Steam AppID (可选)" />
+                        <TextBox x:Name="SteamAppIdBox" PlaceholderText="例如：1234560" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="图标路径 (可选)" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="GameIconPathBox" PlaceholderText="选择图标图片" IsReadOnly="True" />
+                            <Button Grid.Column="1" Content="浏览" Click="BrowseIcon_Click" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="游戏描述" />
+                            <Button
+                                Grid.Column="1"
+                                x:Name="SimplifyBtn"
+                                Content="AI 简化"
+                                Click="SimplifyDesc_Click"
+                                Padding="8,2"
+                                Visibility="Collapsed" />
+                        </Grid>
+                        <TextBox
+                            x:Name="GameDescBox"
+                            PlaceholderText="输入游戏描述"
+                            TextWrapping="Wrap"
+                            Height="80"
+                            TextChanged="GameDescBox_TextChanged"
+                            AcceptsReturn="True" />
+                    </StackPanel>
+
+                    <Button
+                        Content="保存修改"
+                        Click="SaveGame_Click"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Right" />
+
+                    <Border
+                        Height="1"
+                        Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                        Margin="0,8,0,0" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Text="轮播图"
+                            Style="{StaticResource SubtitleTextBlockStyle}" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <Button Content="添加图片/视频" Click="AddCarouselImage_Click" />
+                            <Button Content="删除选中" Click="RemoveCarouselImage_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <ListView
+                        x:Name="CarouselListView"
+                        Height="200"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Text="{x:Bind}"
+                                        TextTrimming="CharacterEllipsis"
+                                        VerticalAlignment="Center"
+                                        Margin="4,4" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Content="裁切"
+                                        Tag="{x:Bind}"
+                                        Click="CropImage_Click"
+                                        Padding="8,2" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Image
+                        x:Name="CarouselPreview"
+                        Stretch="Uniform"
+                        MaxHeight="250"
+                        Visibility="Collapsed" />
+
+                    <Border
+                        Height="1"
+                        Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                        Margin="0,8,0,0" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Text="游戏截图"
+                            Style="{StaticResource SubtitleTextBlockStyle}" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <Button Content="添加截图" Click="AddScreenshot_Click" />
+                            <Button Content="删除选中" Click="RemoveScreenshot_Click" />
+                        </StackPanel>
+                    </Grid>
+
+                    <ListView
+                        x:Name="ScreenshotsListView"
+                        Height="150"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Text="{x:Bind}"
+                                        TextTrimming="CharacterEllipsis"
+                                        VerticalAlignment="Center"
+                                        Margin="4,4" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Content="裁切"
+                                        Tag="{x:Bind}"
+                                        Click="CropScreenshot_Click"
+                                        Padding="8,2" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

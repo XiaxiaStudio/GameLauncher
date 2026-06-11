@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="GameLauncher.CropDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="裁切图片"
+    PrimaryButtonText="确认裁切"
+    SecondaryButtonText="取消"
+    DefaultButton="Primary"
+    mc:Ignorable="d"
+    d:DesignHeight="600"
+    d:DesignWidth="900"
+    MinHeight="500"
+    MinWidth="700"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+
+    <Grid RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Text="拖动裁切框选择区域，拖动边角调整大小"
+            FontSize="13"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+        <Grid
+            x:Name="CropCanvas"
+            Grid.Row="1"
+            Background="#20000000"
+            PointerPressed="CropCanvas_PointerPressed"
+            PointerMoved="CropCanvas_PointerMoved"
+            PointerReleased="CropCanvas_PointerReleased">
+
+            <Image
+                x:Name="SourceImage"
+                Stretch="Uniform"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+
+            <Border
+                x:Name="CropOverlay"
+                Background="Transparent"
+                BorderBrush="White"
+                BorderThickness="2"
+                Visibility="Collapsed" />
+
+            <Canvas x:Name="DimOverlay" />
+
+            <Border
+                x:Name="HandleTopLeft"
+                Width="12" Height="12"
+                Background="White"
+                CornerRadius="6"
+                Visibility="Collapsed"
+                PointerPressed="Handle_PointerPressed"
+                ManipulationMode="TranslateX,TranslateY"
+                ManipulationDelta="Handle_ManipulationDelta" />
+            <Border
+                x:Name="HandleTopRight"
+                Width="12" Height="12"
+                Background="White"
+                CornerRadius="6"
+                Visibility="Collapsed"
+                PointerPressed="Handle_PointerPressed"
+                ManipulationMode="TranslateX,TranslateY"
+                ManipulationDelta="Handle_ManipulationDelta" />
+            <Border
+                x:Name="HandleBottomLeft"
+                Width="12" Height="12"
+                Background="White"
+                CornerRadius="6"
+                Visibility="Collapsed"
+                PointerPressed="Handle_PointerPressed"
+                ManipulationMode="TranslateX,TranslateY"
+                ManipulationDelta="Handle_ManipulationDelta" />
+            <Border
+                x:Name="HandleBottomRight"
+                Width="12" Height="12"
+                Background="White"
+                CornerRadius="6"
+                Visibility="Collapsed"
+                PointerPressed="Handle_PointerPressed"
+                ManipulationMode="TranslateX,TranslateY"
+                ManipulationDelta="Handle_ManipulationDelta" />
+        </Grid>
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Spacing="12">
+            <Button Content="16:9" Click="AspectBtn_Click" Tag="16:9" />
+            <Button Content="4:3" Click="AspectBtn_Click" Tag="4:3" />
+            <Button Content="1:1" Click="AspectBtn_Click" Tag="1:1" />
+            <Button Content="自由" Click="AspectBtn_Click" Tag="free" />
+        </StackPanel>
+    </Grid>
+</ContentDialog>

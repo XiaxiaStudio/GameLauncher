@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="GameLauncher.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:GameLauncher.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="16,8,16,16" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Style="{StaticResource TitleTextBlockStyle}"
+            Text="游戏启动器" />
+
+        <AutoSuggestBox
+            x:Name="SearchBox"
+            Grid.Row="1"
+            PlaceholderText="搜索游戏..."
+            QueryIcon="Find"
+            TextChanged="SearchBox_TextChanged"
+            KeyDown="SearchBox_KeyDown" />
+
+        <Grid Grid.Row="2">
+            <ListView
+                x:Name="GamesList"
+                ItemsSource="{x:Bind FilteredGames, Mode=OneWay}"
+                IsItemClickEnabled="True"
+                ItemClick="GamesList_ItemClick"
+                DragItemsCompleted="GamesList_DragItemsCompleted"
+                SelectionMode="None"
+                CanReorderItems="True"
+                AllowDrop="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:GameItem"
+                                  xmlns:models="using:GameLauncher.Models">
+                        <Grid
+                            Height="68"
+                            Margin="0,4"
+                            Padding="16,10"
+                            Background="{ThemeResource CardBackgroundFillColorDefault}"
+                            CornerRadius="8"
+                            BorderThickness="1"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid CornerRadius="8" Width="48" Height="48">
+                                <FontIcon
+                                    Glyph="&#xE7FC;"
+                                    FontSize="28"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Opacity="0.35"
+                                    Visibility="{x:Bind local:HomePage.StringToVis(IconPath)}" />
+                                <Image
+                                    Source="{x:Bind IconPath, Converter={StaticResource StringToImageSourceConverter}}"
+                                    Stretch="Uniform"
+                                    Visibility="{x:Bind local:HomePage.StringNotEmptyToVis(IconPath)}" />
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon
+                                        Glyph="&#xE735;"
+                                        FontSize="14"
+                                        Foreground="#FFD700"
+                                        Visibility="{x:Bind local:HomePage.BoolToVis(IsFavorite)}" />
+                                    <TextBlock
+                                        Text="{x:Bind Name}"
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxLines="1" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock
+                                        Text="{x:Bind Description}"
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxLines="1" />
+                                    <TextBlock
+                                        Text="{x:Bind LastPlayedText}"
+                                        FontSize="11"
+                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Column="2"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                                <FontIcon
+                                    Glyph="&#xE7C3;"
+                                    FontSize="14"
+                                    Opacity="0.3"
+                                    Visibility="{x:Bind local:HomePage.CountToVis(CarouselImages.Count)}" />
+                                <FontIcon
+                                    Glyph="&#xE8A7;"
+                                    FontSize="14"
+                                    Opacity="0.3" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel
+                x:Name="EmptyPanel"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Spacing="12"
+                Visibility="Collapsed">
+                <FontIcon
+                    Glyph="&#xE7FC;"
+                    FontSize="64"
+                    Opacity="0.25"
+                    HorizontalAlignment="Center" />
+                <TextBlock
+                    x:Name="EmptyText"
+                    Text="还没有添加游戏"
+                    FontSize="18"
+                    Opacity="0.5"
+                    HorizontalAlignment="Center" />
+                <TextBlock
+                    Text="点击左下角齿轮按钮进入设置添加游戏"
+                    FontSize="14"
+                    Opacity="0.35"
+                    HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
